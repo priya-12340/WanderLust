@@ -9,6 +9,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
+const {listingSchema} = require("./schema.js");
 
 const MONGO_URL = async function main() {
     await mongoose.connect(process.env.MONGO_URI);
@@ -23,9 +24,21 @@ app.use(express.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
+
 app.get("/", (req, res) =>{
     res.send("Hi, I am root");
 });
+
+const validateListing = (req, res, next) => {
+    let error = listingSchema.validate(req.body);
+        
+        if(error){
+            let errMsg = error.details.map((el) => el.message).join(",");
+            throw new ExpressError(400, errMsg);
+        }else{
+            next();
+        }
+};
 
 // index route
 app.get("/listings", wrapAsync(async (req, res) => {
@@ -47,7 +60,9 @@ app.get("/listings/:id", wrapAsync(async (req, res) => {
 
 //create route
 app.post("/listings",
+    validateListing,
     wrapAsync(async (req, res, next) => {
+        
         if(!req.body.listing){
             throw new ExpressError(400, "Send valid data for listing");
         };
@@ -64,11 +79,10 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
 }));
 
 //update route
-app.put("/listings/:id", wrapAsync(async (req,res) => {
+app.put("/listings/:id",
+    validateListing,
+    wrapAsync(async (req,res) => {
     let {id} = req.params;
-    if(!req.body.listing){
-        throw new ExpressError(400, "Send valid data for listing");
-    };
     await Listing.findByIdAndUpdate(id, {...req.body.listing});
     res.redirect(`/listings/${id}`);
 }));
@@ -87,7 +101,8 @@ app.all("/*splat", (req, res, next) => {
 
 app.use((err, req, res, next) => {
     let {statusCode = 500, message = "something went wrong!"} = err;
-    res.status(statusCode).send(message);
+    res.status(statusCode).render("error.ejs", {message});
+    // res.status(statusCode).send(message);
 });
 
 app.listen(8080, () => {
