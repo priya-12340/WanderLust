@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { listingSchema } = require("../schema");
 
 const reviewSchema = new Schema({
     comment: String,
