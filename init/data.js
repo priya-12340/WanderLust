@@ -116,7 +116,7 @@ const sampleListings = [
       url: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjl8fG1vdW50YWlufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
     },
     price: 4000,
-    location: "Serengeti National Park",
+    location: "Serengeti",
     country: "Tanzania",
   },
   {
@@ -140,7 +140,7 @@ const sampleListings = [
       url: "https://images.unsplash.com/photo-1618140052121-39fc6db33972?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bG9kZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
     },
     price: 10000,
-    location: "Fiji",
+    location: "Nadi",
     country: "Fiji",
   },
   {
@@ -272,7 +272,7 @@ const sampleListings = [
       url: "https://images.unsplash.com/photo-1488462237308-ecaa28b729d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8c2t5JTIwdmFjYXRpb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
     },
     price: 750,
-    location: "Costa Rica",
+    location: "Monteverde",
     country: "Costa Rica",
   },
   {
@@ -320,7 +320,7 @@ const sampleListings = [
       url: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bGFrZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
     },
     price: 6000,
-    location: "Maldives",
+    location: "Male",
     country: "Maldives",
   },
   {
@@ -344,7 +344,7 @@ const sampleListings = [
       url: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVhY2glMjBob3VzZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
     },
     price: 1800,
-    location: "Costa Rica",
+    location: "Tamarindo",
     country: "Costa Rica",
   },
 ];

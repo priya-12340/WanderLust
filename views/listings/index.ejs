@@ -1,29 +1,167 @@
 <% layout("/layouts/boilerplate") %>
 
-        <h3>All Listings</h3>
-        <!-- <form method="get" action="/listings/new">
-        <button>Create New Listing</button>
-    </form> -->
+<style>
+    #filters-bar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
 
-        <div class="row row-cols-lg-3 row-cols-md-3 roe-cols-sm-1">
-            <% for(let listing of allListings){ %>
-                <a href="/listings/<%= listing._id %>" class="listing-link">
-                    <div class="card col listing-card">
-                        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing image"
-                            style="height: 20rem">
-                        <div class="card-img-overlay"></div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <b>
-                                    <%= listing.title %>
-                                </b>
-                                <br>
-                                &#8377;<%= listing.price.toLocaleString("en-IN") %> /night
-                            </p>
-                        </div>
-                    </div>
-                    <% } %>
-                </a>
+    #filters {
+        display: flex;
+        flex-wrap: nowrap;
+        flex: 1;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
 
+    #filters::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-link {
+        text-decoration: none;
+        color: inherit;
+        flex-shrink: 0;
+    }
+
+    .filter {
+        text-align: center;
+        margin-right: 2rem;
+        margin-top: 1rem;
+        padding-bottom: 0.3rem;
+        white-space: nowrap;
+        opacity: 0.7;
+        border-bottom: 2px solid transparent;
+    }
+
+    .filter:hover,
+    .filter.active {
+        opacity: 1;
+        cursor: pointer;
+    }
+
+    .filter.active {
+        border-bottom: 2px solid black;
+    }
+
+    .filter p {
+        font-size: 0.8rem;
+        margin-bottom: 0;
+    }
+
+    .tax-info {
+        display: none;
+    }
+
+    .tax-toggle {
+        border: 1px solid black;
+        border-radius: 1rem;
+        height: 3rem;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 576px) {
+        #filters-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .tax-toggle {
+            justify-content: center;
+            margin-top: 1rem;
+        }
+    }
+</style>
+
+<%
+    const filters = [
+        { name: "Trending", icon: "fa-solid fa-fire" },
+        { name: "Rooms", icon: "fa-solid fa-house" },
+        { name: "Iconic Cities", icon: "fa-solid fa-mountain-city" },
+        { name: "Mountains", icon: "fa-solid fa-mountain" },
+        { name: "Castles", icon: "fa-brands fa-fort-awesome" },
+        { name: "Amazing Pools", icon: "fa-solid fa-person-swimming" },
+        { name: "Camping", icon: "fa-solid fa-campground" },
+        { name: "Farms", icon: "fa-solid fa-cow" },
+        { name: "Arctic", icon: "fa-regular fa-snowflake" },
+        { name: "Domes", icon: "fa-solid fa-igloo" },
+        { name: "Boats", icon: "fa-solid fa-ship" }
+    ];
+    const active = locals.category || "";
+%>
+
+<div id="filters-bar">
+    <div id="filters">
+        <% for (let f of filters) { %>
+            <a href="/listings?category=<%= encodeURIComponent(f.name) %>" class="filter-link">
+                <div class="filter <%= active === f.name ? 'active' : '' %>">
+                    <div><i class="<%= f.icon %>"></i></div>
+                    <p><%= f.name %></p>
+                </div>
+            </a>
+        <% } %>
+    </div>
+
+    <div class="tax-toggle">
+        <div class="form-check-reverse form-switch">
+            <input type="checkbox" class="form-check-input" role="switch" id="flexSwitchCheckDefault">
+            <label for="flexSwitchCheckDefault" class="form-check-label">Display total after Taxes</label>
         </div>
-   
+    </div>
+</div>
+
+<% if (allListings.length === 0) { %>
+    <div class="text-center mt-5 mb-5">
+        <h5>
+            <% if (locals.q) { %>
+                No listings found for "<%= q %>"
+            <% } else if (locals.category) { %>
+                No listings added in <%= category %> yet
+            <% } else { %>
+                No listings added yet
+            <% } %>
+        </h5>
+        <p class="text-muted">Try another category or search something else.</p>
+        <a href="/listings" class="btn btn-dark">View all listings</a>
+    </div>
+<% } %>
+
+<div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 mt-3">
+    <% for (let listing of allListings) { %>
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+            <div class="card col listing-card">
+                <img src="<%= listing.image.url %>" class="card-img-top" alt="listing image" style="height: 20rem">
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <b><%= listing.title %></b>
+                        <br>
+                        &#8377;<%= listing.price.toLocaleString("en-IN") %> /night
+                        <i class="tax-info">&nbsp;&nbsp;+18% GST</i>
+                    </p>
+                </div>
+            </div>
+        </a>
+    <% } %>
+</div>
+
+<script>
+    const taxSwitch = document.getElementById("flexSwitchCheckDefault");
+    taxSwitch.addEventListener("click", () => {
+        const infos = document.getElementsByClassName("tax-info");
+        for (let info of infos) {
+            info.style.display = taxSwitch.checked ? "inline" : "none";
+        }
+    });
+
+    const activeFilter = document.querySelector(".filter.active");
+    if (activeFilter) {
+        activeFilter.scrollIntoView({ inline: "center", block: "nearest" });
+    }
+</script>
