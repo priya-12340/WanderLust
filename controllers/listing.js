@@ -84,15 +84,29 @@ module.exports.renderEditForm = async (req, res) => {
         return res.redirect("/listings");
     }
 
-    let originalImageUrl = listing.image.url;
-    originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
+    let originalImageUrl = listing.image && listing.image.url
+        ? listing.image.url.replace("/upload", "/upload/w_250")
+        : "";
     res.render("listings/edit.ejs", { listing, originalImageUrl });
 };
 
 module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
 
-    let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+    let response = await geocodingClient.forwardGeocode({
+        query: req.body.listing.location,
+        limit: 1,
+    }).send();
+
+    if (!response.body.features.length) {
+        req.flash("error", "Send valid location for listing");
+        return res.redirect(`/listings/${id}/edit`);
+    }
+
+    let listing = await Listing.findByIdAndUpdate(id, {
+        ...req.body.listing,
+        geometry: response.body.features[0].geometry,
+    });
 
     if (typeof req.file !== "undefined") {
         let url = req.file.path;
