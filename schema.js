@@ -1,5 +1,4 @@
 const joi = require("joi");
-
 const categories = [
     "Trending",
     "Rooms",
