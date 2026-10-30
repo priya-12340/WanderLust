@@ -6,6 +6,8 @@ A full-stack travel accommodation marketplace where users can discover, list, an
 
 > The app is hosted on Render's free tier. After a period of inactivity the first request can take around 50 seconds while the instance wakes up.
 
+**Demo Login info:** `Demo` / `demo1234`
+
 ## Screenshots
 
 | Home | Listing and Map |
